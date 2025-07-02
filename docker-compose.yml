@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./db/tasks.db
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - DEBUG=true
+    volumes:
+      - ./db:/app/db
+    restart: unless-stopped
+
+  # Optional: Add PostgreSQL for production-like setup
+  # db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: tasks
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: password
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data: 

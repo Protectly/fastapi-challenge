@@ -1,55 +1,50 @@
+from typing import Optional, List
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, validator
-from enum import Enum
+from pydantic import BaseModel
 
 
-# Bug: Priority enum not used in Task models
-class Priority(str, Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    URGENT = "urgent"
-
-
-class TaskBase(BaseModel):
-    title: str
-    description: Optional[str] = None
-    priority: str = "medium"  # Bug: Should use Priority enum
-    due_date: Optional[datetime] = None
-
-
-class TaskCreate(TaskBase):
-    # Bug: Missing title length validation
-    pass
-
-
-class TaskUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    is_completed: Optional[bool] = None
-    priority: Optional[str] = None
-    due_date: Optional[datetime] = None
-
-    # Bug: No validation for priority values here either
-
-
-class TaskInDB(TaskBase):
+class PokemonBase(BaseModel):
     id: int
-    is_completed: bool
-    owner_id: int
-    created_at: datetime
-    updated_at: Optional[datetime] = None  # Bug: This should not be Optional
+    name: str
+    height: int
+    weight: int
+    types: List[str]
+
+
+class Pokemon(PokemonBase):
+    abilities: List[str]
+    sprite_url: Optional[str] = None
 
     class Config:
         from_attributes = True
 
 
-class Task(TaskInDB):
+class PokemonSearchResponse(BaseModel):
+    results: List[Pokemon]
+    count: int
+    next_url: Optional[str] = None
+    previous_url: Optional[str] = None
+
+
+class FavoriteBase(BaseModel):
+    pokemon_id: int
+    pokemon_name: str
+
+
+class FavoriteCreate(FavoriteBase):
     pass
 
 
-class TaskListResponse(BaseModel):
-    tasks: list[Task]
+class Favorite(FavoriteBase):
+    id: int
+    user_id: int
+    is_active: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class FavoriteResponse(BaseModel):
+    favorites: List[Favorite]
     total: int
-    # Bug: Missing pagination fields like page, size, etc.

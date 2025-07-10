@@ -1,55 +1,57 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
+from fastapi.responses import JSONResponse
 
 from app.core.config import settings
-from app.core.database import create_tables
-from app.routers import auth, tasks, users
+from app.core.database import engine, Base
+from app.routers import auth, pokemon, users, favorites
 
 
-# Bug: Missing proper lifespan context manager setup
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
-    create_tables()
+    # Create database tables
+    Base.metadata.create_all(bind=engine)
     yield
-    # Shutdown - nothing to clean up
 
 
 app = FastAPI(
-    title=settings.project_name,
-    # Bug: Missing version, description, and other metadata
-    debug=settings.debug,
+    title="Pokemon API",
+    description="A FastAPI application for Pokemon data and user favorites",
+    version="1.0.0",
     lifespan=lifespan,
 )
 
-# Bug: CORS middleware too permissive
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allowed_hosts,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Include routers
-app.include_router(auth.router, prefix=settings.api_v1_prefix)
-app.include_router(tasks.router, prefix=settings.api_v1_prefix)
-app.include_router(users.router, prefix=settings.api_v1_prefix)
+app.include_router(auth.router, prefix="/auth", tags=["authentication"])
+app.include_router(pokemon.router, prefix="/pokemon", tags=["pokemon"])
+app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(favorites.router, prefix="/favorites", tags=["favorites"])
 
 
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to Task Management API"}
+async def root():
+    return {"message": "Welcome to Pokemon API"}
 
 
 @app.get("/health")
-def health_check():
-    return {"status": "healthy"}
+async def health_check():
+    return {"status": "healthy", "version": "1.0.0"}
 
 
-# Bug: Missing proper error handlers
+@app.exception_handler(404)
+async def not_found_handler(request, exc):
+    return JSONResponse(status_code=404, content={"detail": "Resource not found"})
+
+
 @app.exception_handler(500)
-async def internal_server_error_handler(request, exc):
-    # Bug: Exposing internal error details
-    return HTTPException(status_code=500, detail=str(exc))
+async def internal_error_handler(request, exc):
+    return JSONResponse(status_code=500, content={"detail": "Internal server error"})

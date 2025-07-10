@@ -250,7 +250,6 @@ class TestTaskListResponse:
         assert "tasks" in data
         assert "total" in data
 
-        # Bug: Missing pagination fields - these assertions will fail
         # Candidates should add these fields to TaskListResponse
         assert "page" in data  # Will fail - not implemented
         assert "size" in data  # Will fail - not implemented
@@ -264,12 +263,12 @@ class TestBuggyTests:
         """This test has a bug - wrong assertion"""
         response = client.get(f"/api/v1/tasks/{sample_task.id}", headers=auth_headers)
         data = response.json()
-        # Bug: This assertion is wrong - priority should be "high" not "low"
+
         assert data["priority"] == "low"  # Wrong! sample_task has priority "high"
 
     def test_wrong_endpoint_example(self, client, auth_headers):
         """This test has a bug - wrong endpoint"""
         task_data = {"title": "Test Task"}
-        # Bug: Using wrong endpoint - should be /api/v1/tasks/ not /tasks/
+
         response = client.post("/tasks/", json=task_data, headers=auth_headers)
         assert response.status_code == 201  # Will fail - endpoint doesn't exist

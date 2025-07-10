@@ -51,7 +51,7 @@ class TestCORS:
         """Test that CORS headers are present - may fail due to overly permissive settings"""
         response = client.get("/", headers={"Origin": "http://localhost:3000"})
         assert response.status_code == 200
-        # Bug: These headers might be too permissive due to allow_origins=["*"]
+
         # Candidates should restrict CORS in production
         assert "access-control-allow-origin" in response.headers
 

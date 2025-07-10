@@ -153,7 +153,6 @@ class TestTokenAuth:
         response = client.get("/api/v1/users/me", headers=headers)
         assert response.status_code == 401
 
-    # Bug: This test has wrong assertion - will help identify test bugs vs code bugs
     def test_token_format_is_wrong(self, client, sample_user):
         """This test itself has a bug - wrong assertion"""
         response = client.post(
@@ -161,7 +160,7 @@ class TestTokenAuth:
             json={"email": sample_user.email, "password": "testpassword123"},
         )
         data = response.json()
-        # Bug: This assertion is wrong - token_type should be "bearer" not "Bearer"
+
         assert data["token_type"] == "Bearer"  # Wrong! Should be "bearer"
 
 

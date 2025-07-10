@@ -1,27 +1,24 @@
 from pydantic_settings import BaseSettings
-from typing import Optional
 
 
 class Settings(BaseSettings):
-    # Database
-    database_url: str = "sqlite:///./tasks.db"
+    # App Settings
+    app_name: str = "Pokemon API"
+    debug: bool = False
+
+    # Database Settings
+    database_url: str = "sqlite:///./pokemon_api.db"
 
     # JWT Settings
-    secret_key: str = "super-secret-key-change-in-production"  # Bug: Hardcoded secret
+    secret_key: str = "your-secret-key-here"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
 
     # API Settings
-    api_v1_prefix: str = "/api/v1"
-    project_name: str = "Task Management API"
-    debug: bool = True
-
-    # CORS Settings - Bug: Too permissive
-    allowed_hosts: list = ["*"]
+    pokeapi_base_url: str = "https://pokeapi.co/api/v2"
 
     class Config:
         env_file = ".env"
 
 
-# Bug: Missing proper singleton pattern - creating multiple instances
 settings = Settings()

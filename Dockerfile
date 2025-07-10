@@ -8,14 +8,11 @@ RUN apt-get update && apt-get install -y \
     gcc &&
     rm -rf /var/lib/apt/lists/*
 
-# Install uv
-RUN pip install uv
-
 # Copy dependency files
-COPY pyproject.toml uv.lock* ./
+COPY requirements.txt ./
 
 # Install dependencies
-RUN uv sync --no-dev
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
@@ -27,4 +24,4 @@ EXPOSE 8000
 RUN mkdir -p /app/db
 
 # Run migrations and start server
-CMD ["sh", "-c", "uv run alembic upgrade head && uv run uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]

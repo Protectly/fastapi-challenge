@@ -1,0 +1,9 @@
+-r requirements.txt
+pytest>=8.4.1
+pytest-asyncio>=1.0.0
+pytest-cov>=6.2.1
+black>=23.11.0
+isort>=5.12.0
+flake8>=6.1.0
+mypy>=1.7.1
+requests>=2.31.0 

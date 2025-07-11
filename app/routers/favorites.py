@@ -89,8 +89,7 @@ def remove_pokemon_from_favorites(
 
     if not favorite:
         raise HTTPException(status_code=404, detail="Pokemon not found in favorites")
-
-    # Soft delete by setting is_active to False
+    
     favorite.is_active = False
     db.commit()
 

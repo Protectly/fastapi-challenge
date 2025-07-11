@@ -4,7 +4,6 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
 
-# Database configuration
 SQLALCHEMY_DATABASE_URL = "sqlite:///./pokemon_api.db"
 
 engine = create_engine(

@@ -10,7 +10,6 @@ from app.routers import auth, pokemon, users, favorites
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create database tables
     Base.metadata.create_all(bind=engine)
     yield
 
@@ -30,10 +29,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(auth.router, prefix="/auth", tags=["authentication"])
-app.include_router(pokemon.router, prefix="/pokemon", tags=["pokemon"])
-app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["authentication"])
+app.include_router(pokemon.router, prefix="/api/v1/pokemon", tags=["pokemon"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
 app.include_router(favorites.router, prefix="/favorites", tags=["favorites"])
 
 

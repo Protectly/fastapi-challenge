@@ -5,7 +5,6 @@ from sqlalchemy import pool
 
 from alembic import context
 
-# Import your models here for autogenerate to work
 from app.core.database import Base
 from app.models.user import User
 from app.models.task import Task

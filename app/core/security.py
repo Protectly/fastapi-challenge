@@ -59,9 +59,8 @@ def get_current_user(
             raise credentials_exception
         token_data = TokenData(username=username)
     except JWTError:
-        raise credentials_exception
-
-    # Import here to avoid circular imports
+                raise credentials_exception
+    
     from app.models.user import User
 
     user = db.query(User).filter(User.username == token_data.username).first()

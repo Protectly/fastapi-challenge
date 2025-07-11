@@ -29,7 +29,6 @@ async def get_pokemon_list(
 
         data = response.json()
 
-        # Fetch detailed info for each Pokemon
         pokemon_list = []
         for pokemon_data in data["results"]:
             pokemon_detail = await get_pokemon_detail(pokemon_data["url"])
